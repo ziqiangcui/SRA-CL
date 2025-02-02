@@ -184,7 +184,6 @@ if __name__ == '__main__':
     num_samples = len(TrainData)
     print(f"Number of samples in TrainDataLoader: {num_samples}")
 
-    # # 打印一条样本
     # sample = next(iter(TrainDataLoader))
     # print("One sample from TrainDataLoader:")
     # print(sample[1])

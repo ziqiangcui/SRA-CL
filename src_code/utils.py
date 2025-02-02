@@ -67,18 +67,18 @@ class SequenceDataset(Dataset):
 
         for token in input_ids:
             if token == 0:
-                mask_indices.append(0)  # 元素为0的位置不参与mask
+                mask_indices.append(0)  
                 replaced_input_ids.append(token)
             else:
                 if random.random() < p:
                     mask_indices.append(1)
-                    # 从 neighbor_matrix[token] 中随机选择一个邻居替换掉原来的 token
+                
                     neighbors = neighbor_matrix[token]
                     if len(neighbors) > 0:
                         replaced_token = random.choice(neighbors)
                     else:
                         print("====debug no neighbors=========")
-                        replaced_token = token  # 如果没有邻居，保持原样
+                        replaced_token = token 
                     replaced_input_ids.append(replaced_token)
                 else:
                     mask_indices.append(0)
@@ -507,14 +507,7 @@ def idcg_k(k):
     
     
 def mrr_at_k(actual, predicted, topk):
-    """
-    计算 MRR (Mean Reciprocal Rank) 指标
-
-    :param actual: List of lists, 每个用户的实际项目列表
-    :param predicted: List of lists, 每个用户的预测项目列表
-    :param topk: int, 计算 MRR 时考虑的前 k 个项目
-    :return: float, MRR 值
-    """
+   
     sum_mrr = 0.0
     num_users = len(predicted)
     
@@ -601,5 +594,5 @@ def info_nce_single(seq, seq_similar, temp, batch_size, sim='dot'):
 
 def mask_correlated_samples_single(batch_size):
     mask = torch.ones((batch_size, batch_size), dtype=bool)
-    mask = mask.fill_diagonal_(0)  # 将对角线上的元素设置为False，因为这些是正样本对
+    mask = mask.fill_diagonal_(0)  
     return mask
