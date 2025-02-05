@@ -13,7 +13,7 @@ For a more detailed list of dependencies, please refer to the `requirements.txt`
 
 Follow the steps below to run the Semantic Retrieval Augmented Contrastive Learning (SRA-CL):
 
-### 1. Build Datasets and Generate Prompts
+### 1. Build Datasets and Generate Prompts.
 
 Navigate to the `build_datasets&prompts` directory and run the appropriate Jupyter notebook for your dataset:
 
