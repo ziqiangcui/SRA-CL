@@ -39,5 +39,5 @@ python obtain_text_emb_user.py
 ### 3. Train recommender models.
 ```bash
 cd recommender_code
-run `sh train.sh`
+sh train.sh
 ```
