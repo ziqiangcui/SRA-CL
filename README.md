@@ -6,7 +6,7 @@ You can refer to `requirements.txt` for the experimental environment we set to u
 
 ## Running SRA-CL
 
-Follow the steps below to run the Semantic Retrieval Augmented Contrastive Learning (SRA-CL) model:
+Follow the steps below to run the Semantic Retrieval Augmented Contrastive Learning (SRA-CL):
 
 ### 1. Build Datasets and Generate Prompts
 
