@@ -15,16 +15,15 @@ Follow the steps below to run the Semantic Retrieval Augmented Contrastive Learn
 
 ### 1. Build Datasets and Generate Prompts.
 
-Navigate to the `build_datasets&prompts` directory and run the appropriate Jupyter notebook for your dataset:
-
 ```bash
 cd build_datasets&prompts
-# Replace <dataset> with the name of your dataset
-jupyter notebook <dataset>.ipynb 
+
+# Replace <dataset> with the name of the selected dataset
+jupyter notebook <dataset_name>.ipynb 
 ```
 
 ### 2. Use LLM API to generate text descriptions and then obtain semantic embeddings.
-Navigate to the get_llmResponse&semanticEmb directory and run the following scripts to generate text descriptions and obtain semantic embeddings:
+
 ```bash
 cd get_llmResponse&semanticEmb
 
