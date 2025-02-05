@@ -5,9 +5,9 @@ from recbole.model.layers import TransformerEncoder
 from utils import info_nce, info_nce_single
 import torch.nn.functional as F
 
-class SASRec_CE(torch.nn.Module):
+class TransRec(torch.nn.Module):
     def __init__(self, config):
-        super(SASRec_CE, self).__init__()
+        super(TransRec, self).__init__()
         # load parameters info
         self.n_layers = config.n_layers
         self.n_heads = config.n_heads

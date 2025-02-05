@@ -4,7 +4,7 @@ import torch
 import argparse
 from tqdm import tqdm
 import torch.optim as optim
-from model import SASRec_CE
+from model import TransRec
 from utils import *
 from recbole.utils import ensure_dir, get_local_time, early_stopping, calculate_valid_score, dict2str
 from logging import getLogger
@@ -81,51 +81,6 @@ args.seq_int_to_keys = seq_int_to_keys
 args.seq_keys_to_int = seq_keys_to_int
 
 
-def compute_cosine_similarity_batch(user_semantic_emb, top_k=100, batch_size=1024):
-    num_users = user_semantic_emb.size(0)
-    user_sorted_indices = np.zeros((num_users, top_k), dtype=np.int32)
-
-    # Normalize the embeddings
-    user_semantic_emb = user_semantic_emb / user_semantic_emb.norm(dim=1, keepdim=True)
-
-    # Create a DataLoader for batching
-    dataset = TensorDataset(user_semantic_emb)
-    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
-
-    for i, batch in enumerate(dataloader):
-        batch_emb = batch[0].cuda()  # Move batch to GPU
-        batch_emb = batch_emb / batch_emb.norm(dim=1, keepdim=True)  # Normalize the batch embeddings
-        batch_cosine_sim = torch.mm(batch_emb, user_semantic_emb.t().cuda())  # Compute cosine similarity
-        _, batch_topk_indices = torch.topk(batch_cosine_sim, top_k, dim=1, largest=True, sorted=True)  # Get top k indices
-        batch_topk_indices = batch_topk_indices.cpu().numpy()  # Move back to CPU
-
-        start_idx = i * batch_size
-        end_idx = min(start_idx + batch_size, num_users)
-        user_sorted_indices[start_idx:end_idx, :] = batch_topk_indices
-
-    return user_sorted_indices
-
-# def compute_cosine_similarity_batch(user_semantic_emb, top_k=100, batch_size=1024):
-#     num_users = user_semantic_emb.size(0)
-#     user_sorted_indices = np.zeros((num_users, top_k), dtype=np.int32)
-
-#     # Create a DataLoader for batching
-#     dataset = TensorDataset(user_semantic_emb)
-#     dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
-
-#     for i, batch in enumerate(dataloader):
-#         batch_emb = batch[0].cuda()  # Move batch to GPU
-#         batch_cosine_sim = torch.mm(batch_emb, user_semantic_emb.t().cuda())  # Compute cosine similarity
-#         _, batch_topk_indices = torch.topk(batch_cosine_sim, top_k, dim=1, largest=True, sorted=True)  # Get top k indices
-#         batch_topk_indices = batch_topk_indices.cpu().numpy()  # Move back to CPU
-
-#         start_idx = i * batch_size
-#         end_idx = min(start_idx + batch_size, num_users)
-#         user_sorted_indices[start_idx:end_idx, :] = batch_topk_indices
-
-#     return user_sorted_indices
-
-
 logger = getLogger()
 if __name__ == '__main__':
     item_semantic_emb = torch.load(args.item_semantic_emb_file)
@@ -137,13 +92,7 @@ if __name__ == '__main__':
     
 
     user_sorted_indices_file = args.user_sorted_indices_file
-    # if os.path.exists(user_sorted_indices_file):
-    #     print("loading semantic similarity")
-    #     user_sorted_indices = np.load(user_sorted_indices_file)
-    #     user_semantic_emb = torch.load(args.user_semantic_emb_file)
-    # else:
-    #     print("computing semantic similarity")
-    user_semantic_emb = torch.load(args.user_semantic_emb_file).cuda()  # Move embeddings to GPU
+    user_semantic_emb = torch.load(args.user_semantic_emb_file).cuda() 
     user_sorted_indices = compute_cosine_similarity_batch(user_semantic_emb)
     np.save(user_sorted_indices_file, user_sorted_indices)
         
@@ -198,7 +147,7 @@ if __name__ == '__main__':
     print(f"Number of samples in ValDataLoader: {num_samples}")
     
     
-    model = SASRec_CE(args).to(args.device) # no ReLU activation in original SASRec implementation?
+    model = TransRec(args).to(args.device) # no ReLU activation in original SASRec implementation?
     print("-------model initialized-----------")
     optimizer = optim.Adam(model.parameters(), lr=args.learning_rate, weight_decay=args.weight_decay)
     
@@ -228,6 +177,7 @@ if __name__ == '__main__':
         if verbose:
             logger.info(train_loss_output)
         print(train_loss_output)
+        
         # eval
         if args.eval_step <= 0:
             if saved:
@@ -273,16 +223,11 @@ if __name__ == '__main__':
                     logger.info(stop_output)
                 break
     
-    # model evaluation
-
+    # test
     test_result = evaluate(args, model, TestDataLoader, load_best_model=True)
     df = pd.DataFrame([test_result])
     pd.set_option('display.float_format', lambda x: '%.4f' % x)
-    # df.to_excel(args.saved_result_file, index=False, sheet_name=config['model'])
     df.to_csv(args.saved_result_file, index=False, sep='\t')
-    logger.info(('best valid ') + f': {best_valid_result}')
-    logger.info(('test result') + f': {test_result}')
-    
     print(('best valid ') + f': {best_valid_result}')
     print(('test result') + f': {test_result}')
 

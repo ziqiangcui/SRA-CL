@@ -9,6 +9,7 @@ from torch.utils.data import Dataset, DataLoader
 from tqdm import tqdm
 from collections import ChainMap
 import math 
+from torch.utils.data import DataLoader, TensorDataset
 
 def calculate_valid_score(valid_result, valid_metric=None):
     r"""return valid score from valid result
@@ -596,3 +597,28 @@ def mask_correlated_samples_single(batch_size):
     mask = torch.ones((batch_size, batch_size), dtype=bool)
     mask = mask.fill_diagonal_(0)  
     return mask
+
+
+def compute_cosine_similarity_batch(user_semantic_emb, top_k=100, batch_size=1024):
+    num_users = user_semantic_emb.size(0)
+    user_sorted_indices = np.zeros((num_users, top_k), dtype=np.int32)
+
+    # Normalize the embeddings
+    user_semantic_emb = user_semantic_emb / user_semantic_emb.norm(dim=1, keepdim=True)
+
+    # Create a DataLoader for batching
+    dataset = TensorDataset(user_semantic_emb)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=False)
+
+    for i, batch in enumerate(dataloader):
+        batch_emb = batch[0].cuda()  # Move batch to GPU
+        batch_emb = batch_emb / batch_emb.norm(dim=1, keepdim=True)  # Normalize the batch embeddings
+        batch_cosine_sim = torch.mm(batch_emb, user_semantic_emb.t().cuda())  # Compute cosine similarity
+        _, batch_topk_indices = torch.topk(batch_cosine_sim, top_k, dim=1, largest=True, sorted=True)  # Get top k indices
+        batch_topk_indices = batch_topk_indices.cpu().numpy()  # Move back to CPU
+
+        start_idx = i * batch_size
+        end_idx = min(start_idx + batch_size, num_users)
+        user_sorted_indices[start_idx:end_idx, :] = batch_topk_indices
+
+    return user_sorted_indices
