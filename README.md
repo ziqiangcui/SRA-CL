@@ -1,8 +1,13 @@
 ## Introduction
 This is the code for our paper: **Semantic Retrieval Augmented Contrastive Learning for Sequential Recommendation**.
 
-<!-- ## Environment Dependencies
-You can refer to `requirements.txt` for the experimental environment we set to use. -->
+## Environment Dependencies
+This project uses the following versions of Python and Torch:
+
+- **Python**: 3.8.19
+- **Torch**: 1.13.0+cu117
+
+For a more detailed list of dependencies, please refer to the `requirements.txt` file.
 
 ## Running SRA-CL
 
