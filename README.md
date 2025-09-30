@@ -1,5 +1,5 @@
 ## Introduction
-This is the code for our paper: **Semantic Retrieval Augmented Contrastive Learning for Sequential Recommendation**.
+This is the code for our NeurIPS 2025 paper: **Semantic Retrieval Augmented Contrastive Learning for Sequential Recommendation**.
 
 ## Environment Dependencies
 This project uses the following versions of Python and Torch:
