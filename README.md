@@ -3,6 +3,9 @@
 <h1><a color="red" href="https://arxiv.org/abs/2503.04162">[NeurIPS 2025] SRA-CL: Semantic Retrieval Augmented Contrastive Learning for Sequential Recommendation</a></h1>
 </div> 
 
+![](method.png)
+
+<h4 align="center">Overview of SRA-CL.</h4>
 
 ## Environment Dependencies
 This project uses the following versions of Python and Torch:
