@@ -1,7 +1,7 @@
 
 <div align=center>
-<h1><a color="red" href="https://arxiv.org/abs/2503.04162">SRA-CL: Semantic Retrieval Augmented Contrastive Learning for Sequential Recommendation</a></h1>
-
+<h1><a color="red" href="https://arxiv.org/abs/2503.04162">[NeurIPS 2025] SRA-CL: Semantic Retrieval Augmented Contrastive Learning for Sequential Recommendation</a></h1>
+</div> 
 
 
 ## Environment Dependencies
