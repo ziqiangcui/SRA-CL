@@ -1,4 +1,4 @@
-## Official code for our NeurIPS 2025 paper: **SRA-CL: Semantic Retrieval Augmented Contrastive Learning for Sequential Recommendation**.
+# Official code for our NeurIPS 2025 paper: **Semantic Retrieval Augmented Contrastive Learning for Sequential Recommendation**.
 
 ## Environment Dependencies
 This project uses the following versions of Python and Torch:
